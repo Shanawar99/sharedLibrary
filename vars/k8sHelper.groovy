@@ -6,7 +6,7 @@ def deployRelease(Map configRelease) {
     sh "cd ./kubernetes/helm/k8s && helm upgrade --install -f ./values.yaml ${configRelease.RELEASE_NAME} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
     sh "kubectl get services --namespace ${configRelease.NAMESPACE}"
     sh '''#!/bin/bash
-    kubectl get svc -n "\${configRelease.NAMESPACE}" -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'"
+    kubectl get svc -n "\${configRelease.NAMESPACE}" -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'
     while [[ "$(kubectl get svc -n "\${configRelease.NAMESPACE}" -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}')" =~ "pending" ]]; do
     echo "Waiting for external Ip"
     sleep 5
