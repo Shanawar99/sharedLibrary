@@ -3,9 +3,8 @@ def createNamespace(Map configNameSpace) {
 }
 
 def deployRelease(Map configRelease) {
-    sh "cd ./kubernetes/helm/k8s && helm install -f ./values-green.yaml ${configRelease.RELEASE_NAME}-${configRelease.IMAGE_TAG} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
-    sh "kubectl describe services --namespace ${configRelease.NAMESPACE}"
-    sh "kubectl get services --namespace ${configRelease.NAMESPACE} --field-selector metadata.name=${configRelease.RELEASE_NAME}-${configRelease.IMAGE_TAG}"
+    sh "cd ./kubernetes/helm/k8s && helm install -f ./values-green.yaml ${configRelease.RELEASE_NAME} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
+    sh "kubectl get services --namespace ${configRelease.NAMESPACE} --field-selector metadata.name=${configRelease.RELEASE_NAME}"
 }
 
 def promoteRelease(Map configRelease) {
@@ -15,8 +14,8 @@ def promoteRelease(Map configRelease) {
 
 
 def removeRelease(Map configRemoveRelease) {
-    sh "helm uninstall ${configRemoveRelease.RELEASE_NAME}-${configRemoveRelease.IMAGE_TAG} --namespace ${configRemoveRelease.NAMESPACE}"
-    sh "kubectl get services --namespace ${configRemoveRelease.NAMESPACE} --field-selector metadata.name=${configRemoveRelease.RELEASE_NAME}-${configRemoveRelease.IMAGE_TAG}"
+    sh "helm uninstall ${configRemoveRelease.RELEASE_NAME} --namespace ${configRemoveRelease.NAMESPACE}"
+    sh "kubectl get services --namespace ${configRemoveRelease.NAMESPACE} --field-selector metadata.name=${configRemoveRelease.RELEASE_NAME}"
 
 }
 
