@@ -7,7 +7,7 @@ def deployRelease(Map configRelease) {
     sh "kubectl get services --namespace ${configRelease.NAMESPACE}"
     sh """
     #!/bin/bash
-    kubectl get svc -n "${configRelease.NAMESPACE}" -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'
+    kubectl get svc -n ${configRelease.NAMESPACE} -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'
     while [[ "$(kubectl get svc -n ${configRelease.NAMESPACE} -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}')" =~ "pending" ]]; do
     echo "Waiting for external Ip"
     sleep 5
