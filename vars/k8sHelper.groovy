@@ -7,7 +7,7 @@ def deployRelease(Map configRelease) {
     sh "kubectl get services --namespace ${configRelease.NAMESPACE}"
     sh "externalIPs=`kubectl get services --namespace ${configRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'`"
     sh "echo $externalIPs"
-    sh "if [[ " ${externalIPs[*]} " =~ "<pending>" ]]; then
+    sh "if [[ $externalIPs =~ "<pending>" ]]; then
         echo $externalIPs
         fi"
 }
