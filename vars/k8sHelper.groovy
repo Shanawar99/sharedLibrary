@@ -10,7 +10,7 @@ def deployRelease(Map configRelease) {
           echo $externalIPs
           while [ -z $external_ip ]; do
             echo "Waiting for end point..."
-            external_ip=$(kubectl get svc --namespace ${configRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}")
+            external_ip=`kubectl get services --namespace ${configRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'`
             [ -z "$external_ip" ] && sleep 10
             done
          echo 'End point ready:' && echo $external_ip
