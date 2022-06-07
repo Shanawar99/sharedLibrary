@@ -14,8 +14,6 @@ def deployRelease(Map configRelease) {
 
 def removeRelease(Map configRemoveRelease) {
     sh "helm uninstall ${configRemoveRelease.RELEASE_NAME} --namespace ${configRemoveRelease.NAMESPACE}"
-    sh "kubectl get services --namespace ${configRemoveRelease.NAMESPACE}"
-    sh "kubectl get services --namespace ${configRemoveRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'"
 
 }
 
