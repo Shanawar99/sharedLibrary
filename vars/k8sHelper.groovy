@@ -35,5 +35,5 @@ def updateKubeconfig(Map configKube)
 
 def listResource(Map configlistResource )
 {
-    sh "kubectl get ${configlistResource.RESOURCE} -n ${configlistResource.NAMESPACE} -l=${configlistResource.LABEL} "
+    sh "kubectl get ${configlistResource.RESOURCE} -n ${configlistResource.NAMESPACE} -l=${configlistResource.LABELS} "
 }
