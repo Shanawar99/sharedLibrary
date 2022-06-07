@@ -9,7 +9,7 @@ def deployRelease(Map configRelease) {
     sh "echo $externalIPs"
     sh "if [[ $externalIPs =~ "pending" ]]; then\
         echo $externalIPs\
-        fi\"
+        fi"
 }
 
 def removeRelease(Map configRemoveRelease) {
