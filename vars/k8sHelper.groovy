@@ -5,17 +5,11 @@ def createNamespace(Map configNameSpace) {
 def deployRelease(Map configRelease) {
     sh "cd ./kubernetes/helm/k8s && helm upgrade --install -f ./values.yaml ${configRelease.RELEASE_NAME} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
     sh "kubectl get services --namespace ${configRelease.NAMESPACE}"
-    sh ""
-    sh """externalIPs=`kubectl get services --namespace ${configRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'`
-          echo $externalIPs
-          while [ -z $external_ip ]; do
-            echo "Waiting for end point..."
-            external_ip=`kubectl get services --namespace ${configRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'`
-            [ -z "$external_ip" ] && sleep 10
-            done
-         echo 'End point ready:' && echo $external_ip
-    """
-
+    sh "externalIPs=`kubectl get services --namespace ${configRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'`"
+    sh "echo $externalIPs"
+    sh "if [[ " ${externalIPs[*]} " =~ "<pending>" ]]; then
+        echo $externalIPs
+        fi"
 }
 
 def removeRelease(Map configRemoveRelease) {
