@@ -5,7 +5,7 @@ def createNamespace(Map configNameSpace) {
 def deployRelease(Map configRelease) {
     sh "cd ./kubernetes/helm/k8s && helm upgrade --install -f ./values.yaml ${configRelease.RELEASE_NAME} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
     sh '''#!/bin/bash 
-    while [[ -z "$(kubectl get svc -n ''' + configRelease.NAMESPACE + ''' -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}')"]]; do
+    while [[ -z "$(kubectl get svc -n ''' + configRelease.NAMESPACE + ''' -o jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}')" ]]; do
     echo "Waiting for external Ip"
     sleep 5
     done
@@ -35,5 +35,5 @@ def updateKubeconfig(Map configKube)
 
 def listResource(Map configlistResource )
 {
-    sh "kubectl get ${configlistResource.RESOURCE} -n ${configlistResource.NAMESPACE} -l=${configlistResource.LABELS} "
+    sh "kubectl get ${configlistResource.RESOURCE} -n ${configlistResource.NAMESPACE} -l='${configlistResource.LABELS}' "
 }
