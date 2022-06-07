@@ -5,14 +5,14 @@ def createNamespace(Map configNameSpace) {
 def deployRelease(Map configRelease) {
     sh "cd ./kubernetes/helm/k8s && helm upgrade --install -f ./values.yaml ${configRelease.RELEASE_NAME} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
     sh "kubectl get services --namespace ${configRelease.NAMESPACE}"
-    sh "kubectl get services --namespace ${configRelease.NAMESPACE} --output jsonpath='{.status.loadBalancer.ingress[0].ip}'"
+    sh "kubectl get services --namespace ${configRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'"
 
 }
 
 def removeRelease(Map configRemoveRelease) {
     sh "helm uninstall ${configRemoveRelease.RELEASE_NAME} --namespace ${configRemoveRelease.NAMESPACE}"
     sh "kubectl get services --namespace ${configRemoveRelease.NAMESPACE}"
-    sh "kubectl get services --namespace ${configRemoveRelease.NAMESPACE} --output jsonpath='{.status.loadBalancer.ingress[0].ip}'"
+    sh "kubectl get services --namespace ${configRemoveRelease.NAMESPACE} --output jsonpath='{.items[*].status.loadBalancer.ingress[*].hostname}'"
 
 }
 
