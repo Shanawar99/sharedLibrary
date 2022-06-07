@@ -9,7 +9,6 @@ def deployRelease(Map configRelease) {
     echo "Waiting for external Ip"
     sleep 5
     done
-    kubectl get svc -n ''' + configRelease.NAMESPACE + ''' 
     '''
 }
 
