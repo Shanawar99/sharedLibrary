@@ -6,9 +6,10 @@ def deployRelease(Map configRelease) {
     sh "cd ./kubernetes/helm/k8s && helm upgrade --install -f ./values.yaml ${configRelease.RELEASE_NAME} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
     sh '''#!/bin/bash 
     while [[ -z "$(kubectl get svc -n ''' + configRelease.NAMESPACE + ''' -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}' -l="app.kubernetes.io/instance=''' + configRelease.RELEASE_NAME + '''")" ]]; do
-    echo "Waiting for external Ip"
+    echo "Waiting for external IP"
     sleep 3
     done
+    echo "External IP ready"
     kubectl get svc -n ''' + configRelease.NAMESPACE + ''' -l="app.kubernetes.io/instance=''' + configRelease.RELEASE_NAME + '''"
     '''
 }
