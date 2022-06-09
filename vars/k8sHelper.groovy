@@ -1,5 +1,5 @@
 def createNamespace(Map configNameSpace) {
-    sh "kubectl get namespace --kubeconfig ~/.kube/config_${configNameSpace.CLUSTER_NAME} | grep ${configNameSpace.NAMESPACE} || kubectl create namespace ${configNameSpace.NAMESPACE}"
+    sh "kubectl get namespace --kubeconfig ~/.kube/config_${configNameSpace.CLUSTER_NAME} | grep ${configNameSpace.NAMESPACE} || kubectl create namespace --kubeconfig ~/.kube/config_${configNameSpace.CLUSTER_NAME} ${configNameSpace.NAMESPACE}"
 }
 
 def deployRelease(Map configRelease) {
@@ -15,7 +15,7 @@ def deployRelease(Map configRelease) {
 }
 
 def removeRelease(Map configRemoveRelease) {
-    sh "helm uninstall ${configRemoveRelease.RELEASE_NAME} --namespace ${configRemoveRelease.NAMESPACE}"
+    sh "helm uninstall --kubeconfig ~/.kube/config_${configRemoveRelease.CLUSTER_NAME} ${configRemoveRelease.RELEASE_NAME} --namespace ${configRemoveRelease.NAMESPACE}"
 
 }
 
