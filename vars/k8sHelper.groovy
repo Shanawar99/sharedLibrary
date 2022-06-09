@@ -1,16 +1,16 @@
 def createNamespace(Map configNameSpace) {
-    sh "kubectl get namespace | grep ${configNameSpace.NAMESPACE} || kubectl create namespace ${configNameSpace.NAMESPACE}"
+    sh "kubectl get namespace --kubeconfig ~/.kube/config_${configNameSpace.CLUSTER_NAME} | grep ${configNameSpace.NAMESPACE} || kubectl create namespace ${configNameSpace.NAMESPACE}"
 }
 
 def deployRelease(Map configRelease) {
-    sh "cd ./kubernetes/helm/k8s && helm upgrade --install -f ./values.yaml ${configRelease.RELEASE_NAME} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
+    sh "cd ./kubernetes/helm/k8s && helm upgrade --kubeconfig ~/.kube/config_${configRelease.CLUSTER_NAME} --install -f ./values.yaml ${configRelease.RELEASE_NAME} --set=image.repository=${configRelease.REPOSITORY_URI} --set=image.tag=${configRelease.IMAGE_TAG} --namespace ${configRelease.NAMESPACE} . "
     sh '''#!/bin/bash 
-    while [[ -z "$(kubectl get svc -n ''' + configRelease.NAMESPACE + ''' -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}' -l="app.kubernetes.io/instance=''' + configRelease.RELEASE_NAME + '''")" ]]; do
+    while [[ -z "$(kubectl get svc --kubeconfig ~/.kube/config_''' + configRelease.CLUSTER_NAME + ''' -n ''' + configRelease.NAMESPACE + ''' -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}' -l="app.kubernetes.io/instance=''' + configRelease.RELEASE_NAME + '''")" ]]; do
     echo "Waiting for external IP"
     sleep 3
     done
     echo "External IP ready"
-    kubectl get svc -n ''' + configRelease.NAMESPACE + ''' -l="app.kubernetes.io/instance=''' + configRelease.RELEASE_NAME + '''"
+    kubectl get svc --kubeconfig ~/.kube/config_''' + configRelease.CLUSTER_NAME + ''' -n ''' + configRelease.NAMESPACE + ''' -l="app.kubernetes.io/instance=''' + configRelease.RELEASE_NAME + '''"
     '''
 }
 
@@ -29,7 +29,7 @@ def pushImageToECR(Map config)
 
 def updateKubeconfig(Map configKube)
 {
-    sh """aws eks update-kubeconfig --name ${configKube.CLUSTER_NAME} --region ${configKube.AWS_REGION} """
+    sh """aws eks update-kubeconfig --kubeconfig ~/.kube/config_${configKube.CLUSTER_NAME} --name ${configKube.CLUSTER_NAME} --region ${configKube.AWS_REGION} """
 }
 
 def listResource(Map configlistResource )
