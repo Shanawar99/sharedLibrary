@@ -1,5 +1,5 @@
 def createNamespace(Map configNameSpace) {
-    sh "kubectl get namespace | grep ${configNameSpace.NAMESPACE} || kubectl create namespace ${configNameSpace.NAMESPACE}"
+    sh "kubectl get namespace --kubeconfig ~/.kube/config_${configNameSpace.CLUSTER_NAME} | grep -o ${configNameSpace.NAMESPACE} || kubectl create namespace --kubeconfig ~/.kube/config_${configNameSpace.CLUSTER_NAME} ${configNameSpace.NAMESPACE}"
 }
 
 def deployRelease(Map configRelease) {
